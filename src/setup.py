@@ -21,7 +21,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ),
     install_requires=[
-        'orquestra-core',
+        'z-quantum-core',
         'cmake',
         'gcc7',
         'qulacs'

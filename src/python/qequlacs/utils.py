@@ -1,5 +1,5 @@
 import qulacs
-from orquestra.core.circuit import Circuit, Gate
+from zquantum.core.circuit import Circuit, Gate
 import numpy as np
 
 def convert_circuit_to_qulacs(circuit):

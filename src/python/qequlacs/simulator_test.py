@@ -1,7 +1,7 @@
 from .simulator import QulacsSimulator
 import unittest
 import numpy as np
-from orquestra.core.circuit import Circuit
+from zquantum.core.circuit import Circuit
 from openfermion.ops import QubitOperator, IsingOperator
 from pyquil import Program
 from pyquil.gates import H, CNOT, RX, CZ

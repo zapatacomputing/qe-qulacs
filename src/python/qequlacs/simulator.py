@@ -1,13 +1,13 @@
 import os
 import numpy as np
-# It seems that qulacs has some conflict with pyquil, therefore it needs to be imported before orquestra.core.
+# It seems that qulacs has some conflict with pyquil, therefore it needs to be imported before zquantum.core.
 import qulacs
 from pyquil.wavefunction import Wavefunction
-from orquestra.core.interfaces.backend import QuantumSimulator
-from orquestra.core.circuit import save_circuit
-from orquestra.core.measurement import (load_wavefunction, load_expectation_values, sample_from_wavefunction,
+from zquantum.core.interfaces.backend import QuantumSimulator
+from zquantum.core.circuit import save_circuit
+from zquantum.core.measurement import (load_wavefunction, load_expectation_values, sample_from_wavefunction,
                                         ExpectationValues, get_expectation_values_from_measurements, expectation_values_to_real)
-from orquestra.core.measurement import sample_from_wavefunction
+from zquantum.core.measurement import sample_from_wavefunction
 from pyquil.api import WavefunctionSimulator, get_qc
 import openfermion
 
@@ -19,12 +19,10 @@ class QulacsSimulator(QuantumSimulator):
 
     def run_circuit_and_measure(self, circuit, **kwargs):
         '''
-        TODO: fix dosctrings
-        TODO: refactor so the interface for devices and simulators is the same.
         Run a circuit and measure a certain number of bitstrings
 
         Args:
-            circuit (orquestra.core.circuit.Circuit): the circuit to prepare the state
+            circuit (zquantum.core.circuit.Circuit): the circuit to prepare the state
             n_samples (int): the number of bitstrings to sample
         Returns:
             a list of bitstrings (a list of tuples)
@@ -33,7 +31,6 @@ class QulacsSimulator(QuantumSimulator):
         return sample_from_wavefunction(wavefunction, self.n_samples)
 
     def get_expectation_values(self, circuit, qubit_operator, use_coefficients=True, **kwargs):
-        # TODO
         if self.n_samples==None:
             return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
         else:
