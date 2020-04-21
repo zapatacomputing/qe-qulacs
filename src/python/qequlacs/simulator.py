@@ -10,7 +10,7 @@ from zquantum.core.measurement import (load_wavefunction, load_expectation_value
 from zquantum.core.measurement import sample_from_wavefunction
 from pyquil.api import WavefunctionSimulator, get_qc
 import openfermion
-
+from qeopenfermion import reverse_qubit_order
 from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
 
 class QulacsSimulator(QuantumSimulator):
@@ -44,6 +44,9 @@ class QulacsSimulator(QuantumSimulator):
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
         if self.n_samples != None:
             raise Exception("Exact expectation values work only for n_samples equal to None.")
+
+        # Qubit operators in openfermion use different index ordering than wavefunction.
+        qubit_operator = reverse_qubit_order(qubit_operator)
 
         expectation_values = []
         n_qubits = openfermion.utils.count_qubits(qubit_operator)
