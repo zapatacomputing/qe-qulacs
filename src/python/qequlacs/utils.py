@@ -59,8 +59,3 @@ def append_gate(gate, qulacs_circuit):
         n_qubits = len(gate.qubits)
         Exception(str(n_qubits) + "- qubit gates not supported.")
     return qulacs_circuit
-
-def qubitop_to_qulacspauli(qubit_operator):
-    qubit_operator_str = str(qubit_operator)
-    qulacs_operator = qulacs.quantum_operator.create_quantum_operator_from_openfermion_text(qubit_operator_str)
-    return qulacs_operator
