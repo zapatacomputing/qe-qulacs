@@ -1,6 +1,7 @@
 import os
 # It seems that qulacs has some conflict with pyquil, therefore it needs to be imported before zquantum.core.
 import qulacs
+import numpy as np
 from qulacs.observable import create_observable_from_openfermion_text
 from pyquil.wavefunction import Wavefunction
 from zquantum.core.interfaces.backend import QuantumSimulator
