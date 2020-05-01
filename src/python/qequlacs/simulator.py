@@ -1,5 +1,4 @@
 import os
-import numpy as np
 # It seems that qulacs has some conflict with pyquil, therefore it needs to be imported before zquantum.core.
 import qulacs
 from qulacs.observable import create_observable_from_openfermion_text
@@ -9,8 +8,8 @@ from zquantum.core.circuit import save_circuit
 from zquantum.core.measurement import (load_wavefunction, load_expectation_values, sample_from_wavefunction,
                                         ExpectationValues, get_expectation_values_from_measurements, expectation_values_to_real)
 from zquantum.core.measurement import sample_from_wavefunction
-from pyquil.api import WavefunctionSimulator, get_qc
-from .utils import convert_circuit_to_qulacs
+import openfermion
+from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
 
 class QulacsSimulator(QuantumSimulator):
     def __init__(self, n_samples=None):
