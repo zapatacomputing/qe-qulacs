@@ -4,7 +4,7 @@ import numpy as np
 from zquantum.core.circuit import Circuit
 from openfermion.ops import QubitOperator, IsingOperator
 from pyquil import Program
-from pyquil.gates import H, CNOT, RX, CZ
+from pyquil.gates import H, CNOT, RX, CZ, X
 
 class TestQulacs(unittest.TestCase):
 
@@ -46,5 +46,16 @@ class TestQulacs(unittest.TestCase):
         # When
         measurements = simulator.run_circuit_and_measure(circuit)
         # Then
-        self.assertEqual(len(measurements), 100)
-        self.assertEqual(len(measurements[0]), 3)
+        self.assertEqual(len(measurements.bitstrings), 100)
+        self.assertEqual(len(measurements.bitstrings[0]), 3)
+
+
+
+    def test_run_circuit_and_measure_correct_bitstring_ordering(self):
+        # Given
+        circuit = Circuit(Program(X(0), X(1), X(1), X(2), X(2)))
+        simulator = QulacsSimulator(n_samples=1)
+        # When
+        measurements = simulator.run_circuit_and_measure(circuit)
+        # Then
+        self.assertEqual(measurements.bitstrings, [(1,0,0)])
