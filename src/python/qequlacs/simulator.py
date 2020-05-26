@@ -1,6 +1,8 @@
 import os
 # It seems that qulacs has some conflict with pyquil, therefore it needs to be imported before zquantum.core.
 import qulacs
+import numpy as np
+from qulacs.observable import create_observable_from_openfermion_text
 from pyquil.wavefunction import Wavefunction
 from zquantum.core.interfaces.backend import QuantumSimulator
 from zquantum.core.circuit import save_circuit
@@ -8,7 +10,6 @@ from zquantum.core.measurement import (load_wavefunction, load_expectation_value
                                         ExpectationValues, Measurements, expectation_values_to_real)
 from zquantum.core.measurement import sample_from_wavefunction
 import openfermion
-from qeopenfermion import reverse_qubit_order
 from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
 
 class QulacsSimulator(QuantumSimulator):
@@ -42,20 +43,15 @@ class QulacsSimulator(QuantumSimulator):
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
         if self.n_samples != None:
             raise Exception("Exact expectation values work only for n_samples equal to None.")
-
-        # Qubit operators in openfermion use different index ordering than wavefunction.
-        qubit_operator = reverse_qubit_order(qubit_operator)
-
+        
         expectation_values = []
-        n_qubits = openfermion.utils.count_qubits(qubit_operator)
+        qulacs_state = self.get_qulacs_state_from_circuit(circuit)
+        qulacs_observable = create_observable_from_openfermion_text(str(qubit_operator))
 
-        amplitudes = self.get_wavefunction(circuit).amplitudes
-        for term, coeff in qubit_operator.terms.items():
-            term_op = openfermion.QubitOperator(term, coeff)
-            term_sparse = openfermion.utils.qubit_operator_sparse(term_op, n_qubits)
-            expectation_value = openfermion.utils.expectation(term_sparse, amplitudes)
-            expectation_values.append(expectation_value)
-        return ExpectationValues(expectation_values)
+        for term_id in range(qulacs_observable.get_term_count()):
+            term = qulacs_observable.get_term(term_id)
+            expectation_values.append(np.real(term.get_expectation_value(qulacs_state)))
+        return ExpectationValues(np.array(expectation_values))
 
     def get_wavefunction(self, circuit):
         qulacs_state = self.get_qulacs_state_from_circuit(circuit)

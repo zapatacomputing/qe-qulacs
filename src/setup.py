@@ -22,7 +22,6 @@ setuptools.setup(
     ),
     install_requires=[
         'z-quantum-core',
-        'qe-openfermion',
         'cmake',
         'gcc7',
         'qulacs'
