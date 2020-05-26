@@ -7,7 +7,7 @@ from pyquil.wavefunction import Wavefunction
 from zquantum.core.interfaces.backend import QuantumSimulator
 from zquantum.core.circuit import save_circuit
 from zquantum.core.measurement import (load_wavefunction, load_expectation_values, sample_from_wavefunction,
-                                        ExpectationValues, get_expectation_values_from_measurements, expectation_values_to_real)
+                                        ExpectationValues, Measurements, expectation_values_to_real)
 from zquantum.core.measurement import sample_from_wavefunction
 import openfermion
 from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
@@ -27,15 +27,15 @@ class QulacsSimulator(QuantumSimulator):
             a list of bitstrings (a list of tuples)
         '''
         wavefunction = self.get_wavefunction(circuit)
-        return sample_from_wavefunction(wavefunction, self.n_samples)
+        bitstrings = sample_from_wavefunction(wavefunction, self.n_samples)
+        return Measurements(bitstrings)
 
     def get_expectation_values(self, circuit, qubit_operator, **kwargs):
         if self.n_samples==None:
             return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
         else:
             measurements = self.run_circuit_and_measure(circuit)
-            expectation_values = get_expectation_values_from_measurements(
-                                    measurements, qubit_operator)
+            expectation_values = measurements.get_expectation_values(qubit_operator)
 
             expectation_values = expectation_values_to_real(expectation_values)
             return expectation_values
