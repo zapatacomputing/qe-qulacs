@@ -8,6 +8,7 @@ def convert_circuit_to_qulacs(circuit):
         qulacs_circuit = append_gate(gate, qulacs_circuit)
     return qulacs_circuit
 
+
 def append_gate(gate, qulacs_circuit):
     """
     This function is based on the `_try_append_gate` function from https://github.com/qulacs/cirq-qulacs/blob/master/cirqqulacs/qulacs_simulator.py .
@@ -59,6 +60,7 @@ def append_gate(gate, qulacs_circuit):
         n_qubits = len(gate.qubits)
         Exception(str(n_qubits) + "- qubit gates not supported.")
     return qulacs_circuit
+
 
 def qubitop_to_qulacspauli(qubit_operator):
     qubit_operator_str = str(qubit_operator)

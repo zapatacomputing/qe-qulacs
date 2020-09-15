@@ -2,6 +2,8 @@ import os
 
 # It seems that qulacs has some conflict with pyquil, therefore it needs to be imported before zquantum.core.
 import qulacs
+import numpy as np
+from qulacs.observable import create_observable_from_openfermion_text
 from pyquil.wavefunction import Wavefunction
 from zquantum.core.interfaces.backend import QuantumSimulator
 from zquantum.core.circuit import save_circuit
@@ -19,8 +21,6 @@ from zquantum.core.measurement import (
     ExpectationValues,
 )
 import openfermion
-from qeopenfermion import reverse_qubit_order, expectation
-import numpy as np
 from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
 
 
@@ -58,23 +58,18 @@ class QulacsSimulator(QuantumSimulator):
                 "Exact expectation values work only for n_samples equal to None."
             )
 
-        # Qubit operators in openfermion use different index ordering than wavefunction.
-        qubit_operator = reverse_qubit_order(qubit_operator)
-
         expectation_values = []
-        n_qubits = openfermion.utils.count_qubits(qubit_operator)
-
-        wavefunction = self.get_wavefunction(circuit)
-
-        # Pyquil does not support PauliSums with no terms.
-        if len(qubit_operator.terms) == 0:
-            return ExpectationValues(np.zeros((0,)))
-
-        values = []
+        qulacs_state = self.get_qulacs_state_from_circuit(circuit)
 
         for op in qubit_operator:
-            values.append(expectation(op, wavefunction))
-        return expectation_values_to_real(ExpectationValues(np.asarray(values)))
+            qulacs_observable = create_observable_from_openfermion_text(str(op))
+
+            for term_id in range(qulacs_observable.get_term_count()):
+                term = qulacs_observable.get_term(term_id)
+                expectation_values.append(
+                    np.real(term.get_expectation_value(qulacs_state))
+                )
+        return ExpectationValues(np.array(expectation_values))
 
     def get_wavefunction(self, circuit):
         qulacs_state = self.get_qulacs_state_from_circuit(circuit)
