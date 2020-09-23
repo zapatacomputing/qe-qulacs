@@ -9,26 +9,29 @@ It complies to the backend interface defined in the [`z-quantum-core`](https://g
 ## Usage
 
 ### Workflow
-In order to use `qe-qulacs` in your workflow, you need to add it as a resource:
+In order to use `qe-qulacs` in your workflow, you need to add it as an `import` in your Orquestra workflow:
 
 ```yaml
-resources:
+imports:
 - name: qe-qulacs
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/qe-qulacs.git"
+    repository: "git@github.com:zapatacomputing/qe-qulacs.git"
     branch: "master"
 ```
 
-and then import in a specific step:
+and then add it in the `imports` argument of your `step`:
 
 ```yaml
-- - name: my-task
-    template: template-1
-    arguments:
-      parameters:
-      - backend-specs: "{'module_name': 'qequlacs.simulator', 'function_name': 'QulacsSimulator'}"
-      - resources: [qe-qulacs]
+- name: my-step
+  config:
+    runtime:
+      language: python3
+      imports: [qe-qulacs]
+      ...
+  inputs:
+    - backend_specs: '{"module_name": "qequlacs.simulator", "function_name": "QulacsSimulator"}'
+
 ```
 
 You can pass additional arguments, such as `n_samples`, as parameters in the `backend-specs` dictionary.
