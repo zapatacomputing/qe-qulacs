@@ -28,10 +28,16 @@ and then add it in the `imports` argument of your `step`:
     runtime:
       language: python3
       imports: [qe-qulacs]
-      ...
+```
+
+Once that is done, you can use Qulacs simulator in a step of your workflow by specifying the `backend-specs` dictionary:
+
+```yaml
+- name: my-step
+  config:
+    ...
   inputs:
     - backend_specs: '{"module_name": "qequlacs.simulator", "function_name": "QulacsSimulator"}'
-
 ```
 
 You can pass additional arguments, such as `n_samples`, as parameters in the `backend-specs` dictionary.
