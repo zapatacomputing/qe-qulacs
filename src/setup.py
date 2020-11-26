@@ -21,9 +21,9 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ),
     install_requires=[
-        'z-quantum-core',
-        'cmake',
-        'gcc7',
-        'qulacs'
-    ]
+        "cmake>=3.18",
+        "gcc7==0.0.9",
+        "qulacs==0.1.10.1",
+        "z-quantum-core"
+    ],
 )
