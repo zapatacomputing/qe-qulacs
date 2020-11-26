@@ -21,7 +21,7 @@ setuptools.setup(
     ),
     install_requires=[
         "cmake>=3.18",
-        "gcc7==0.0.9",
+        "gcc7==0.0.7", # The latest version 0.0.9 only has wheels for Mac
         "qulacs==0.1.10.1",
         "z-quantum-core"
     ],
