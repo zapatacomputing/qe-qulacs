@@ -27,9 +27,12 @@ def append_gate(gate, qulacs_circuit):
     https://github.com/qulacs/cirq-qulacs/blob/master/cirqqulacs/qulacs_simulator.py
     """
 
-    # From z-quantum.core Circuit: exponent=gate.params[0] / np.pi
+    # From z-quantum.core _circuit.py: exponent=gate.params[0] / np.pi
     # So gate.params[0] = exponent * np.pi
-    angle = gate.params[0]
+    if gate.params:
+        angle = gate.params[0]
+    else:
+        angle = 0
 
     # One qubit gate
     if len(gate.qubits) == 1:
