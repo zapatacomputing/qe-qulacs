@@ -24,6 +24,16 @@ def append_gate(gate, qulacs_circuit):
             qulacs_circuit.add_Z_gate(index)
         elif gate.name == 'H':
             qulacs_circuit.add_H_gate(index)
+        elif gate.name == 'S':
+            if 'DAGGER' in gate.modifiers:
+                qulacs_circuit.add_Sdag_gate(index)
+            else:
+                qulacs_circuit.add_S_gate(index)
+        elif gate.name == 'T':
+            if 'DAGGER' in gate.modifiers:
+                qulacs_circuit.add_Tdag_gate(index)
+            else:
+                qulacs_circuit.add_T_gate(index)
         elif gate.name == 'Rx':
             qulacs_circuit.add_RX_gate(index, -gate.params[0])
         elif gate.name == 'Ry':
@@ -53,9 +63,18 @@ def append_gate(gate, qulacs_circuit):
             gate = qulacs.gate.DenseMatrix(index_2, mat)
             gate.add_control_qubit(index_1,1)
             qulacs_circuit.add_gate(gate)
+        elif gate.name = 'CZ':
+            qulacs_circuit.add_CZ_gate(index_1, index_2)
         else:
             unitary_matrix = gate.to_unitary()
             qulacs_circuit.add_dense_matrix_gate([index_1, index_2], unitary_matrix)
+    # Three qubit gate
+    elif len(gate.qubits) == 3:
+        index_1 = gate.qubits[0].index
+        index_2 = gate.qubits[1].index
+        index_3 = gate.qubits[2].index
+        unitary_matrix = gate.to_unitary()
+        qulacs_circuit.add_dense_matrix_gate([index_1, index_2, index_3], unitary_matrix)
     else:
         n_qubits = len(gate.qubits)
         Exception(str(n_qubits) + "- qubit gates not supported.")
