@@ -34,6 +34,10 @@ def append_gate(gate, qulacs_circuit):
     else:
         angle = 0
 
+    modifiers = [] # dagger and so on
+    if hasattr(gate,  'modifiers'):
+        modifiers = gate.modifiers
+
     # One qubit gate
     if len(gate.qubits) == 1:
         index = gate.qubits[0].index
@@ -46,12 +50,12 @@ def append_gate(gate, qulacs_circuit):
         elif gate.name == 'H':
             qulacs_circuit.add_H_gate(index)
         elif gate.name == 'S':
-            if 'DAGGER' in gate.modifiers:
+            if 'DAGGER' in modifiers:
                 qulacs_circuit.add_Sdag_gate(index)
             else:
                 qulacs_circuit.add_S_gate(index)
         elif gate.name == 'T':
-            if 'DAGGER' in gate.modifiers:
+            if 'DAGGER' in modifiers:
                 qulacs_circuit.add_Tdag_gate(index)
             else:
                 qulacs_circuit.add_T_gate(index)
@@ -98,12 +102,12 @@ def append_gate(gate, qulacs_circuit):
         index_3 = gate.qubits[2].index
 
         if gate.name == 'CSWAP':
-            matrix = np.matrix([[1, 0, 0, 0],
-                                [0, 0, 1, 0],
-                                [0, 1, 0, 0],
-                                [0, 0, 0, 1]])
-            gate = qulacs.gate.DenseMatrix([index_2, index_3], matrix)
-            gate.add_control_qubit(index_1, 1)
+            # Fredkin gate
+            gate = qulacs.gate.FREDKIN(index_1, index_2, index_3)
+            qulacs_circuit.add_gate(gate)
+        elif gate.name == 'CCNOT':
+            # Toffoli gate
+            gate = qulacs.gate.TOFFOLI(index_1, index_2, index_3)
             qulacs_circuit.add_gate(gate)
         else:
             unitary_matrix = gate.to_unitary()
