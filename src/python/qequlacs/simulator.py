@@ -25,6 +25,12 @@ from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
 
 
 class QulacsSimulator(QuantumSimulator):
+    """Quantum simulator class to use as a backend in z-quantum-core.
+    Implements QuantumSimulator interface.
+
+    :param n_samples: The number of runs to perform.
+    :returns: A QulacsSimulator object.
+    """
     def __init__(self, n_samples=None):
         self.n_samples = n_samples
 
@@ -43,6 +49,9 @@ class QulacsSimulator(QuantumSimulator):
         return Measurements(bitstrings)
 
     def get_expectation_values(self, circuit, qubit_operator, **kwargs):
+        """TODO: Needs a good explanation what is  it and how
+        get_expectation_values and get_exact_expectation_values are differ
+        """
         if self.n_samples == None:
             return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
         else:
@@ -53,6 +62,9 @@ class QulacsSimulator(QuantumSimulator):
             return expectation_values
 
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
+        """TODO: Needs a good explanation what is  it and how
+        get_expectation_values and get_exact_expectation_values are differ
+        """
         if self.n_samples != None:
             raise Exception(
                 "Exact expectation values work only for n_samples equal to None."
@@ -72,11 +84,15 @@ class QulacsSimulator(QuantumSimulator):
         return ExpectationValues(np.array(expectation_values))
 
     def get_wavefunction(self, circuit):
+        """Constructs a wave function (state vector) for given circuit
+        """
         qulacs_state = self.get_qulacs_state_from_circuit(circuit)
         amplitudes = qulacs_state.get_vector()
         return Wavefunction(amplitudes)
 
     def get_qulacs_state_from_circuit(self, circuit):
+        """Constructs a qulacs quantum state
+        """
         qulacs_circuit = convert_circuit_to_qulacs(circuit)
         num_qubits = len(circuit.qubits)
         qulacs_state = qulacs.QuantumState(num_qubits)

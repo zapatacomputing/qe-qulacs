@@ -13,6 +13,9 @@ import qulacs
 import numpy as np
 
 def convert_circuit_to_qulacs(circuit):
+    """Given a z-quantum-core circuit converts it to Qulacs
+    by going gate by gate
+    """
     qulacs_circuit = qulacs.QuantumCircuit(len(circuit.qubits))
     for gate in circuit.gates:
         qulacs_circuit = append_gate(gate, qulacs_circuit)
@@ -119,6 +122,8 @@ def append_gate(gate, qulacs_circuit):
 
 
 def qubitop_to_qulacspauli(qubit_operator):
+    """Converts Qubit operator from string representation
+    """
     qubit_operator_str = str(qubit_operator)
     qulacs_operator = qulacs.quantum_operator.create_quantum_operator_from_openfermion_text(qubit_operator_str)
     return qulacs_operator
