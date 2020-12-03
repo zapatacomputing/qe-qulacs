@@ -42,7 +42,7 @@ def XX(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator):
 
     Same as: RXX in Qiskit; XXPowGate in Cirq
 
-    Test::
+    Test:
         import numpy as np
         from qequlacs.gates import XX
         from pyquil import Program, get_qc
@@ -83,12 +83,12 @@ def YY(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator):
 
     Same as: RYY in Qiskit; YYPowGate in Cirq
 
-    Test::
+    Test:
         from qequlacs.gates import YY
         from pyquil import Program, get_qc
         from pyquil.gates import *
         qvm = get_qc('9q-square-qvm')
-        prog = Program(X(0), CNOT(0, 1), YY(0, 0, 1))
+        prog = Program(X(0), CNOT(0, 1), YY(np.pi, 0, 1))
         results = qvm.run_and_measure(prog, trials=10)
     """
 
@@ -121,12 +121,12 @@ def ZZ(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator):
 
     Same as: RZZ in Qiskit; ZZPowGate in Cirq
 
-    Test::
+    Test:
         from qequlacs.gates import ZZ
         from pyquil import Program, get_qc
         from pyquil.gates import *
         qvm = get_qc('9q-square-qvm')
-        prog = Program(X(0), CNOT(0, 1), ZZ(0, 0, 1))
+        prog = Program(X(0), CNOT(0, 1), ZZ(np.pi, 0, 1))
         results = qvm.run_and_measure(prog, trials=10)
     """
 
