@@ -49,8 +49,14 @@ class QulacsSimulator(QuantumSimulator):
         return Measurements(bitstrings)
 
     def get_expectation_values(self, circuit, qubit_operator, **kwargs):
-        """TODO: Needs a good explanation what is  it and how
-        get_expectation_values and get_exact_expectation_values are differ
+        """Executes the circuit and calculates the expectation values for
+        given operator.
+
+        Args:
+            circuit (core.circuit.Circuit): quantum circuit to be executed.
+            qubit_operator(openfermion): Operator for which we calculate the expectation value.
+        Returns:
+            ExpectationValues: object representing expectation values for given operator.
         """
         if self.n_samples == None:
             return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
@@ -62,8 +68,14 @@ class QulacsSimulator(QuantumSimulator):
             return expectation_values
 
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
-        """TODO: Needs a good explanation what is  it and how
-        get_expectation_values and get_exact_expectation_values are differ
+        """Calculates the expectation values for given operator, based on
+        the exact quantum state produced by circuit.
+        
+        Args:
+            circuit (core.circuit.Circuit): quantum circuit to be executed.
+            qubit_operator(openfermion): Operator for which we calculate the expectation value.
+        Returns:
+            ExpectationValues: object representing expectation values for given operator.
         """
         if self.n_samples != None:
             raise Exception(

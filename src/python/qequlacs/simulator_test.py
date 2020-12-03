@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pyquil import Program
+from pyquil import Program, get_qc
 from pyquil.gates import H, CNOT, X, S, T, CZ, CSWAP, CCNOT
 from openfermion import QubitOperator, IsingOperator
 
@@ -102,6 +102,7 @@ class TestGateDefs(unittest.TestCase):
     def setUp(self):
         self.backends = [QulacsSimulator(n_samples=None)]
         self.wf_simulators = [QulacsSimulator(n_samples=None)]
+        self.qvm = get_qc('9q-square-qvm')
 
     def test_gate_XX(self):
         def_gate, gate = XX(0, 0, 1)
@@ -112,11 +113,39 @@ class TestGateDefs(unittest.TestCase):
 
     def test_append_circuit_XX(self):
         # Given
-        circuit = Circuit(Program(H(0), CNOT(0, 1), XX(0, 0, 1)))
+        n_samples = 100
+        # XX with Pi will -> both qubits to 0 in ~100% cases
+        prog1 = Program(X(0), CNOT(0, 1), XX(np.pi, 0, 1))
+        # XX with Pi/2 will -> both qubits to 0 in ~50% cases
+        prog2 = Program(X(0), CNOT(0, 1), XX(np.pi/2, 0, 1))
+        circuit1 = Circuit(prog1)
+        circuit2 = Circuit(prog2)
         # When
-        qulacs_circuit = convert_circuit_to_qulacs(circuit)
+        results1 = self.qvm.run_and_measure(prog1, trials=10)
+        self.assertTrue(1 not in results1[0])
+        self.assertTrue(1 not in results1[1])
+
+        results2 = self.qvm.run_and_measure(prog2, trials=10)
+        self.assertTrue(1 in results2[0])
+        self.assertTrue(0 in results2[0])
+
+        qulacs_circuit = convert_circuit_to_qulacs(circuit1)
         self.assertEqual(qulacs_circuit.get_gate_count(), 3)
         self.assertEqual(qulacs_circuit.get_gate(2).get_name(), "Pauli-rotation")
+
+        for backend in self.backends:
+            backend.n_samples = n_samples
+            measurements = backend.run_circuit_and_measure(circuit1)
+            counts = measurements.get_counts()
+            self.assertEqual(counts['00'], 100)
+
+
+        for backend in self.backends:
+            backend.n_samples = n_samples
+            measurements = backend.run_circuit_and_measure(circuit2)
+            counts = measurements.get_counts()
+            self.assertTrue(counts['00'] > 0)
+            self.assertTrue(counts['11'] > 0)
 
     def test_gate_YY(self):
         def_gate, gate = YY(0, 0, 1)
@@ -140,7 +169,7 @@ class TestGateDefs(unittest.TestCase):
         self.assertEqual(len(gate.params), 1)
         self.assertEqual(def_gate.name, "ZZ")    
 
-    def test_append_circuit_YY(self):
+    def test_append_circuit_ZZ(self):
         # Given
         circuit = Circuit(Program(H(0), CNOT(0, 1), ZZ(0, 0, 1)))
         # When

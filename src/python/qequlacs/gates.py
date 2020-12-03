@@ -25,7 +25,7 @@ from pyquil.quilbase import (
 )
 
 
-def XX(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator) -> Gate:
+def XX(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator):
     """Produces a XX gate which is the tensor product of X with X such as XX=X⊗X::
 
         XX(phi) = [[cos(phi / 2), 0, 0, -1j * sin(phi / 2)],
@@ -33,19 +33,22 @@ def XX(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator) -> 
                    [0, -1j * sin(phi / 2), cos(phi / 2), 0],
                    [-1j * sin(phi / 2), 0, 0, cos(phi / 2)]]
 
-    :param angle: The angle to rotate around the x-axis on the bloch sphere.
-    :param q1: Qubit 1.
-    :param q2: Qubit 2.
-    :returns: A Gate object.
+    Args:
+        angle: The angle to rotate around the x-axis on the bloch sphere.
+        q1: Qubit 1.
+        q2: Qubit 2.
+    Returns:
+        A Gate object.
 
     Same as: RXX in Qiskit; XXPowGate in Cirq
 
     Test::
+        import numpy as np
         from qequlacs.gates import XX
         from pyquil import Program, get_qc
         from pyquil.gates import *
         qvm = get_qc('9q-square-qvm')
-        prog = Program(Z(0), CNOT(0, 1), XX(0, 0, 1))
+        prog = Program(X(0), CNOT(0, 1), XX(np.pi, 0, 1))
         results = qvm.run_and_measure(prog, trials=10)
     """
 
@@ -63,7 +66,7 @@ def XX(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator) -> 
     return [DefXX, _XX(angle)(q1, q2)]
 
 
-def YY(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator) -> Gate:
+def YY(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator):
     """Produces a YY gate which is the tensor product of Y with Y such as YY=Y⊗Y::
 
         YY(phi) = [[cos(phi / 2), 0, 0, 1j * sin(phi / 2)],
@@ -71,10 +74,12 @@ def YY(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator) -> 
                    [0, -1j * sin(phi / 2), cos(phi / 2), 0],
                    [1j * sin(phi / 2), 0, 0, cos(phi / 2)]]
 
-    :param angle: The angle to rotate around the y-axis on the bloch sphere.
-    :param q1: Qubit 1.
-    :param q2: Qubit 2.
-    :returns: A Gate object.
+    Args:
+        angle: The angle to rotate around the y-axis on the bloch sphere.
+        q1: Qubit 1.
+        q2: Qubit 2.
+    Returns:
+        A Gate object.
 
     Same as: RYY in Qiskit; YYPowGate in Cirq
 
@@ -99,7 +104,7 @@ def YY(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator) -> 
     return [DefYY, _YY(angle)(q1, q2)]
 
 
-def ZZ(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator) -> Gate:
+def ZZ(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator):
     """Produces a ZZ gate which is the tensor product of Z with Z such as ZZ=Z⊗Z::
 
         ZZ(phi) = [[exp(-1j * phi /2), 0, 0, 0],
@@ -107,10 +112,12 @@ def ZZ(angle: ParameterDesignator, q1: QubitDesignator, q2: QubitDesignator) -> 
                    [0, 0, exp(1j * phi /2), 0],
                    [0, 0, 0, exp(-1j * phi /2)]]
 
-    :param angle: The angle to rotate around the z-axis on the bloch sphere.
-    :param q1: Qubit 1.
-    :param q2: Qubit 2.
-    :returns: A Gate object.
+    Args:
+        angle: The angle to rotate around the z-axis on the bloch sphere.
+        q1: Qubit 1.
+        q2: Qubit 2.
+    Returns:
+        A Gate object.
 
     Same as: RZZ in Qiskit; ZZPowGate in Cirq
 
