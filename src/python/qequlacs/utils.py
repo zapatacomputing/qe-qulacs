@@ -12,6 +12,11 @@ Approach:
 import qulacs
 import numpy as np
 
+from openfermion.ops import QubitOperator
+# NOTE: in OpenFermion master it is refactored to:
+# from openfermion.ops.operators import QubitOperator
+
+
 def convert_circuit_to_qulacs(circuit):
     """Given a z-quantum-core circuit converts it to Qulacs
     by going gate by gate
@@ -121,7 +126,7 @@ def append_gate(gate, qulacs_circuit):
     return qulacs_circuit
 
 
-def qubitop_to_qulacspauli(qubit_operator):
+def qubitop_to_qulacspauli(qubit_operator: QubitOperator):
     """Converts Qubit operator from string representation
     """
     qubit_operator_str = str(qubit_operator)

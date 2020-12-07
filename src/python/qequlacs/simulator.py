@@ -25,11 +25,14 @@ from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
 
 
 class QulacsSimulator(QuantumSimulator):
-    """Quantum simulator class to use as a backend in z-quantum-core.
+    """
+    Quantum simulator class to use as a backend in z-quantum-core.
     Implements QuantumSimulator interface.
 
-    :param n_samples: The number of runs to perform.
-    :returns: A QulacsSimulator object.
+    Args:
+        n_samples: The number of runs to perform.
+    Returns:
+        a QulacsSimulator object.
     """
     def __init__(self, n_samples=None):
         self.n_samples = n_samples

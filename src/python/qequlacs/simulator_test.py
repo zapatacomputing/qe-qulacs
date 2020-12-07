@@ -31,7 +31,7 @@ class TestPyquilGates(unittest.TestCase):
     def test_run_circuit_1qubit_gates(self):
         # Given
         circuit = Circuit(Program(S(0), T(1)))
-        n_samples = 100
+        n_samples = 1000
         # When
         qulacs_circuit = convert_circuit_to_qulacs(circuit)
         self.assertEqual(qulacs_circuit.get_gate_count(), 2)
@@ -48,7 +48,7 @@ class TestPyquilGates(unittest.TestCase):
     def test_run_circuit_2qubit_gates(self):
         # Given
         circuit = Circuit(Program(X(0), CZ(0, 1)))
-        n_samples = 100
+        n_samples = 1000
         # When
         qulacs_circuit = convert_circuit_to_qulacs(circuit)
         self.assertEqual(qulacs_circuit.get_gate_count(), 2)
@@ -64,7 +64,7 @@ class TestPyquilGates(unittest.TestCase):
     def test_run_circuit_3qubit_gates_toffoli(self):
         # Given
         circuit = Circuit(Program(X(0), X(1), CCNOT(0, 1, 2)))
-        n_samples = 100
+        n_samples = 1000
         # When
         qulacs_circuit = convert_circuit_to_qulacs(circuit)
         self.assertEqual(qulacs_circuit.get_gate_count(), 3)
@@ -80,7 +80,7 @@ class TestPyquilGates(unittest.TestCase):
     def test_run_circuit_3qubit_gates_fredkin(self):
         # Given
         circuit = Circuit(Program(X(0), X(2), CSWAP(0, 1, 2)))
-        n_samples = 100
+        n_samples = 1000
         # When
         qulacs_circuit = convert_circuit_to_qulacs(circuit)
         self.assertEqual(qulacs_circuit.get_gate_count(), 3)
@@ -113,7 +113,7 @@ class TestGateDefs(unittest.TestCase):
 
     def test_append_circuit_XX(self):
         # Given
-        n_samples = 100
+        n_samples = 1000
         # XX with Pi will -> both qubits to 0 in ~100% cases
         prog1 = Program(X(0), CNOT(0, 1), XX(np.pi, 0, 1))
         # XX with Pi/2 will -> both qubits to 0 in ~50% cases
@@ -121,11 +121,11 @@ class TestGateDefs(unittest.TestCase):
         circuit1 = Circuit(prog1)
         circuit2 = Circuit(prog2)
         # When
-        results1 = self.qvm.run_and_measure(prog1, trials=10)
+        results1 = self.qvm.run_and_measure(prog1, trials=n_samples)
         self.assertTrue(1 not in results1[0])
         self.assertTrue(1 not in results1[1])
 
-        results2 = self.qvm.run_and_measure(prog2, trials=10)
+        results2 = self.qvm.run_and_measure(prog2, trials=n_samples)
         self.assertTrue(1 in results2[0])
         self.assertTrue(0 in results2[0])
 
@@ -137,7 +137,7 @@ class TestGateDefs(unittest.TestCase):
             backend.n_samples = n_samples
             measurements = backend.run_circuit_and_measure(circuit1)
             counts = measurements.get_counts()
-            self.assertEqual(counts['00'], 100)
+            self.assertEqual(counts['00'], 1000)
 
 
         for backend in self.backends:
@@ -156,11 +156,19 @@ class TestGateDefs(unittest.TestCase):
 
     def test_append_circuit_YY(self):
         # Given
-        circuit = Circuit(Program(H(0), CNOT(0, 1), YY(0, 0, 1)))
+        n_samples = 1000
+        circuit = Circuit(Program(H(0), CNOT(0, 1), YY(np.pi, 0, 1)))
         # When
         qulacs_circuit = convert_circuit_to_qulacs(circuit)
         self.assertEqual(qulacs_circuit.get_gate_count(), 3)
         self.assertEqual(qulacs_circuit.get_gate(2).get_name(), "Pauli-rotation")
+
+        for backend in self.backends:
+            backend.n_samples = n_samples
+            measurements = backend.run_circuit_and_measure(circuit)
+            counts = measurements.get_counts()
+            self.assertTrue(counts['00'] > 0)
+            self.assertTrue(counts['11'] > 0)
 
     def test_gate_ZZ(self):
         def_gate, gate = ZZ(0, 0, 1)
@@ -171,8 +179,16 @@ class TestGateDefs(unittest.TestCase):
 
     def test_append_circuit_ZZ(self):
         # Given
-        circuit = Circuit(Program(H(0), CNOT(0, 1), ZZ(0, 0, 1)))
+        n_samples = 1000
+        circuit = Circuit(Program(H(0), CNOT(0, 1), ZZ(np.pi, 0, 1)))
         # When
         qulacs_circuit = convert_circuit_to_qulacs(circuit)
         self.assertEqual(qulacs_circuit.get_gate_count(), 3)
         self.assertEqual(qulacs_circuit.get_gate(2).get_name(), "Pauli-rotation")
+
+        for backend in self.backends:
+            backend.n_samples = n_samples
+            measurements = backend.run_circuit_and_measure(circuit)
+            counts = measurements.get_counts()
+            self.assertTrue(counts['00'] > 0)
+            self.assertTrue(counts['11'] > 0)
