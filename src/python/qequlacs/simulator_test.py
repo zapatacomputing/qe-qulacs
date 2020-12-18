@@ -1,9 +1,26 @@
+import pytest
 from .simulator import QulacsSimulator
-import unittest
 from zquantum.core.interfaces.backend_test import QuantumSimulatorTests
 
-class TestQulacs(unittest.TestCase, QuantumSimulatorTests):
 
-    def setUp(self):
-        self.backends = [QulacsSimulator(n_samples=None)]
-        self.wf_simulators = [QulacsSimulator(n_samples=None)]
+@pytest.fixture(
+    params=[
+        {"n_samples": None},
+        {"n_samples": 1000},
+    ]
+)
+def backend(request):
+    return QulacsSimulator(**request.param)
+
+
+@pytest.fixture(
+    params=[
+        {"n_samples": None},
+    ]
+)
+def wf_simulator(request):
+    return QulacsSimulator(**request.param)
+
+
+class TestQulacs(QuantumSimulatorTests):
+    pass
