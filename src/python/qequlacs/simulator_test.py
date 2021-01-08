@@ -1,6 +1,9 @@
 import pytest
 from .simulator import QulacsSimulator
-from zquantum.core.interfaces.backend_test import QuantumSimulatorTests
+from zquantum.core.interfaces.backend_test import (
+    QuantumSimulatorTests,
+    QuantumSimulatorGatesTest,
+)
 
 
 @pytest.fixture(
@@ -23,4 +26,8 @@ def wf_simulator(request):
 
 
 class TestQulacs(QuantumSimulatorTests):
+    pass
+
+
+class TestQulacsGates(QuantumSimulatorGatesTest):
     pass
