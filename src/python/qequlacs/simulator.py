@@ -26,7 +26,7 @@ from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
 
 class QulacsSimulator(QuantumSimulator):
     def __init__(self, n_samples=None):
-        self.n_samples = n_samples
+        super().__init__(n_samples)
 
     def run_circuit_and_measure(self, circuit, **kwargs):
         """
@@ -42,36 +42,8 @@ class QulacsSimulator(QuantumSimulator):
         bitstrings = sample_from_wavefunction(wavefunction, self.n_samples)
         return Measurements(bitstrings)
 
-    def get_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.n_samples == None:
-            return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
-        else:
-            measurements = self.run_circuit_and_measure(circuit)
-            expectation_values = measurements.get_expectation_values(qubit_operator)
-
-            expectation_values = expectation_values_to_real(expectation_values)
-            return expectation_values
-
-    def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.n_samples != None:
-            raise Exception(
-                "Exact expectation values work only for n_samples equal to None."
-            )
-
-        expectation_values = []
-        qulacs_state = self.get_qulacs_state_from_circuit(circuit)
-
-        for op in qubit_operator:
-            qulacs_observable = create_observable_from_openfermion_text(str(op))
-
-            for term_id in range(qulacs_observable.get_term_count()):
-                term = qulacs_observable.get_term(term_id)
-                expectation_values.append(
-                    np.real(term.get_expectation_value(qulacs_state))
-                )
-        return ExpectationValues(np.array(expectation_values))
-
     def get_wavefunction(self, circuit):
+        super().get_wavefunction(circuit)
         qulacs_state = self.get_qulacs_state_from_circuit(circuit)
         amplitudes = qulacs_state.get_vector()
         return Wavefunction(amplitudes)
