@@ -25,8 +25,11 @@ from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
 
 
 class QulacsSimulator(QuantumSimulator):
+
+    supports_batching = False
+
     def __init__(self, n_samples=None):
-        self.n_samples = n_samples
+        super().__init__(n_samples)
 
     def run_circuit_and_measure(self, circuit, **kwargs):
         """
@@ -42,21 +45,19 @@ class QulacsSimulator(QuantumSimulator):
         bitstrings = sample_from_wavefunction(wavefunction, self.n_samples)
         return Measurements(bitstrings)
 
-    def get_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.n_samples == None:
-            return self.get_exact_expectation_values(circuit, qubit_operator, **kwargs)
-        else:
-            measurements = self.run_circuit_and_measure(circuit)
-            expectation_values = measurements.get_expectation_values(qubit_operator)
-
-            expectation_values = expectation_values_to_real(expectation_values)
-            return expectation_values
+    def get_wavefunction(self, circuit):
+        super().get_wavefunction(circuit)
+        qulacs_state = self.get_qulacs_state_from_circuit(circuit)
+        amplitudes = qulacs_state.get_vector()
+        return Wavefunction(amplitudes)
 
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
         if self.n_samples != None:
             raise Exception(
                 "Exact expectation values work only for n_samples equal to None."
             )
+        self.number_of_circuits_run += 1
+        self.number_of_jobs_run += 1
 
         expectation_values = []
         qulacs_state = self.get_qulacs_state_from_circuit(circuit)
@@ -70,11 +71,6 @@ class QulacsSimulator(QuantumSimulator):
                     np.real(term.get_expectation_value(qulacs_state))
                 )
         return ExpectationValues(np.array(expectation_values))
-
-    def get_wavefunction(self, circuit):
-        qulacs_state = self.get_qulacs_state_from_circuit(circuit)
-        amplitudes = qulacs_state.get_vector()
-        return Wavefunction(amplitudes)
 
     def get_qulacs_state_from_circuit(self, circuit):
         qulacs_circuit = convert_circuit_to_qulacs(circuit)
