@@ -25,6 +25,9 @@ from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
 
 
 class QulacsSimulator(QuantumSimulator):
+
+    supports_batching = False
+
     def __init__(self, n_samples=None):
         super().__init__(n_samples)
 
