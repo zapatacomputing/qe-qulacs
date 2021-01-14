@@ -53,7 +53,7 @@ def append_gate(gate, qulacs_circuit):
             qulacs_circuit.add_SWAP_gate(index_1, index_2)
         elif gate.name == "XX":
             qulacs_circuit.add_multi_Pauli_rotation_gate(
-                [index_1, index_2], [1, 1], gate.params[0] * 2
+                [index_1, index_2], [1, 1], -gate.params[0] * 2
             )
         elif gate.name == "YY":
             qulacs_circuit.add_multi_Pauli_rotation_gate(
@@ -61,7 +61,7 @@ def append_gate(gate, qulacs_circuit):
             )
         elif gate.name == "ZZ":
             qulacs_circuit.add_multi_Pauli_rotation_gate(
-                [index_1, index_2], [3, 3], gate.params[0] * 2
+                [index_1, index_2], [3, 3], -gate.params[0] * 2
             )
         elif gate.name == "CPHASE":
             mat = np.diag([1.0, np.exp(1.0j * gate.params[0])])
