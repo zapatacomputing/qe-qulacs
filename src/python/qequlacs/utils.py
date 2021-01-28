@@ -1,4 +1,5 @@
 import qulacs
+from qulacs.gate import PauliRotation
 from zquantum.core.circuit import Circuit, Gate
 import numpy as np
 
@@ -52,22 +53,28 @@ def append_gate(gate, qulacs_circuit):
         elif gate.name == "SWAP":
             qulacs_circuit.add_SWAP_gate(index_1, index_2)
         elif gate.name == "XX":
-            qulacs_circuit.add_multi_Pauli_rotation_gate(
-                [index_1, index_2], [1, 1], -gate.params[0] * 2
-            )
+            gate_to_add = PauliRotation([index_1, index_2], [1, 1], -gate.params[0] * 2)
+            qulacs_circuit.add_gate(gate_to_add)
         elif gate.name == "YY":
-            qulacs_circuit.add_multi_Pauli_rotation_gate(
-                [index_1, index_2], [2, 2], -gate.params[0] * 2
-            )
+            gate_to_add = PauliRotation([index_1, index_2], [2, 2], -gate.params[0] * 2)
+            qulacs_circuit.add_gate(gate_to_add)
         elif gate.name == "ZZ":
-            qulacs_circuit.add_multi_Pauli_rotation_gate(
-                [index_1, index_2], [3, 3], -gate.params[0] * 2
+            gate_to_add = PauliRotation([index_1, index_2], [3, 3], -gate.params[0] * 2)
+            qulacs_circuit.add_gate(gate_to_add)
+        elif gate.name == "XY":
+            cos = np.cos(gate.params[0] * 2)
+            sin = -1j * np.sin(gate.params[0] * 2)
+            mat = np.array(
+                [[1.0, 0.0, 0.0, 0.0], [0, cos, sin, 0], [0, sin, cos, 0], [0, 0, 0, 1]]
             )
+            gate_to_add = qulacs.gate.DenseMatrix([index_1, index_2], mat)
+            qulacs_circuit.add_gate(gate_to_add)
+
         elif gate.name == "CPHASE":
             mat = np.diag([1.0, np.exp(1.0j * gate.params[0])])
-            gate = qulacs.gate.DenseMatrix(index_2, mat)
-            gate.add_control_qubit(index_1, 1)
-            qulacs_circuit.add_gate(gate)
+            gate_to_add = qulacs.gate.DenseMatrix(index_2, mat)
+            gate_to_add.add_control_qubit(index_1, 1)
+            qulacs_circuit.add_gate(gate_to_add)
         else:
             unitary_matrix = gate.to_unitary()
             qulacs_circuit.add_dense_matrix_gate([index_1, index_2], unitary_matrix)
