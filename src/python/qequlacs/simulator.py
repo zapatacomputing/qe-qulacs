@@ -33,7 +33,7 @@ class QulacsSimulator(QuantumSimulator):
         super().__init__(n_samples)
 
     def run_circuit_and_measure(
-        self, circuit: Circuit, n_samples: Optional[int] = None ** kwargs
+        self, circuit: Circuit, n_samples: Optional[int] = None, **kwargs
     ):
         """
         Run a circuit and measure a certain number of bitstrings
