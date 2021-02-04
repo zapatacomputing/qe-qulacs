@@ -6,7 +6,7 @@ import numpy as np
 from qulacs.observable import create_observable_from_openfermion_text
 from pyquil.wavefunction import Wavefunction
 from zquantum.core.interfaces.backend import QuantumSimulator
-from zquantum.core.circuit import save_circuit
+from zquantum.core.circuit import save_circuit, Circuit
 from zquantum.core.measurement import (
     load_wavefunction,
     load_expectation_values,
@@ -22,6 +22,7 @@ from zquantum.core.measurement import (
 )
 import openfermion
 from .utils import convert_circuit_to_qulacs, qubitop_to_qulacspauli
+from typing import Optional
 
 
 class QulacsSimulator(QuantumSimulator):
@@ -31,18 +32,22 @@ class QulacsSimulator(QuantumSimulator):
     def __init__(self, n_samples=None):
         super().__init__(n_samples)
 
-    def run_circuit_and_measure(self, circuit, **kwargs):
+    def run_circuit_and_measure(
+        self, circuit: Circuit, n_samples: Optional[int] = None, **kwargs
+    ):
         """
         Run a circuit and measure a certain number of bitstrings
 
         Args:
-            circuit (zquantum.core.circuit.Circuit): the circuit to prepare the state
-            n_samples (int): the number of bitstrings to sample
+            circuit: the circuit to prepare the state
+            n_samples: the number of bitstrings to sample
         Returns:
-            a list of bitstrings (a list of tuples)
+            The measured bitstrings.
         """
+        if n_samples is None:
+            n_samples = self.n_samples
         wavefunction = self.get_wavefunction(circuit)
-        bitstrings = sample_from_wavefunction(wavefunction, self.n_samples)
+        bitstrings = sample_from_wavefunction(wavefunction, n_samples)
         return Measurements(bitstrings)
 
     def get_wavefunction(self, circuit):
