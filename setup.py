@@ -14,7 +14,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/zapatacomputing/qe-qulacs",
     packages=setuptools.find_namespace_packages(
-        include=["zquantum.*"], where="src/python"
+        include=["qequlacs.*"], where="src/python"
     ),
     package_dir={"": "src/python"},
     classifiers=(
