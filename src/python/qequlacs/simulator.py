@@ -44,7 +44,6 @@ class QulacsSimulator(QuantumSimulator):
         Returns:
             The measured bitstrings.
         """
-        super().run_circuit_and_measure(circuit)
         if n_samples is None:
             if self.n_samples is None:
                 raise ValueError(
