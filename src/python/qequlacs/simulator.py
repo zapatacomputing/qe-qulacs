@@ -14,7 +14,6 @@ from zquantum.core.measurement import (
 from zquantum.core.wip.circuits import (
      new_circuit_from_old_circuit,
      Circuit as NewCircuit,
-     export_to_qiskit,
  )
 from zquantum.core.wip.compatibility_tools import compatible_with_old_type
 from .conversions import convert_to_qulacs
