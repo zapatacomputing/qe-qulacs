@@ -49,21 +49,39 @@ ZQUANTUM_TO_QULACS_GATES = {
         gate_name: (_gate_factory_from_pauli_rotation([ax, ax]), _negate)
         for ax, gate_name in enumerate(["XX", "YY", "ZZ"], start=1)
     },
-    # TODO: add CPHASE
+}
+
+
+def _make_cphase_gate(operation: circuits.GateOperation):
+    matrix = np.diag([1.0, np.exp(1.0j * operation.gate.params[0])])
+    gate_to_add = qulacs.gate.DenseMatrix(operation.qubit_indices[1], matrix)
+    gate_to_add.add_control_qubit(operation.qubit_indices[0], 1)
+    return gate_to_add
+
+
+GATE_SPECIAL_CASES = {
+    "CPHASE": _make_cphase_gate,
 }
 
 
 def _qulacs_gate(operation: circuits.GateOperation):
     try:
+        factory = GATE_SPECIAL_CASES[operation.gate.name]
+        return factory(operation)
+    except KeyError:
+        pass
+
+    try:
         qulacs_gate_factory, param_transform = ZQUANTUM_TO_QULACS_GATES[
             operation.gate.name
         ]
+        return qulacs_gate_factory(
+            *operation.qubit_indices, *map(param_transform, operation.gate.params)
+        )
     except KeyError:
-        return _custom_qulacs_gate(operation)
+        pass
 
-    return qulacs_gate_factory(
-        *operation.qubit_indices, *map(param_transform, operation.gate.params)
-    )
+    return _custom_qulacs_gate(operation)
 
 
 def _custom_qulacs_gate(operation: circuits.GateOperation):
