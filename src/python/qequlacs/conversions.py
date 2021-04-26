@@ -11,10 +11,6 @@ def _negate(x):
     return -x
 
 
-def _negate_and_double(x):
-    return -x
-
-
 def _no_params(*args, **kwargs):
     raise RuntimeError(
         "This gate isn't parametric, you shouldn't need to map its params"
@@ -50,18 +46,18 @@ ZQUANTUM_TO_QULACS_GATES = {
     },
     # 2-qubit, parametric
     **{
-        gate_name: (_gate_factory_from_pauli_rotation([ax, ax]), _negate_and_double)
+        gate_name: (_gate_factory_from_pauli_rotation([ax, ax]), _negate)
         for ax, gate_name in enumerate(["XX", "YY", "ZZ"], start=1)
     },
-    "XY": (_gate_factory_from_pauli_rotation([1, 2]), _negate_and_double),
-    # custom gates
     # TODO: add CPHASE
 }
 
 
 def _qulacs_gate(operation: circuits.GateOperation):
     try:
-        qulacs_gate_factory, param_transform = ZQUANTUM_TO_QULACS_GATES[operation.gate.name]
+        qulacs_gate_factory, param_transform = ZQUANTUM_TO_QULACS_GATES[
+            operation.gate.name
+        ]
     except KeyError:
         return _custom_qulacs_gate(operation)
 
