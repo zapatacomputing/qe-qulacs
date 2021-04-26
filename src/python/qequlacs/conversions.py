@@ -12,7 +12,7 @@ def _negate(x):
 
 
 def _negate_and_double(x):
-    return -x * 2
+    return -x
 
 
 def _no_params(*args, **kwargs):
