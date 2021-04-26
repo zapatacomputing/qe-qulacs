@@ -43,7 +43,12 @@ class QulacsSimulator(QuantumSimulator):
             The measured bitstrings.
         """
         if n_samples is None:
-            n_samples = self.n_samples
+            if self.n_samples is None:
+                raise ValueError(
+                    "n_samples needs to be specified either as backend attribute or as an function argument."
+                )
+            else:
+                n_samples = self.n_samples
         wavefunction = self.get_wavefunction(circuit)
         bitstrings = sample_from_wavefunction(wavefunction, n_samples)
         return Measurements(bitstrings)
