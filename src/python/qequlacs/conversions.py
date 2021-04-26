@@ -15,13 +15,14 @@ def _no_params(*args, **kwargs):
 
 
 ZQUANTUM_TO_QULACS_GATES = {
+    "I": (qulacs.gate.Identity, _no_params),
     **{
         gate_name: (getattr(qulacs.gate, gate_name), _no_params)
-        for gate_name in ["I", "X", "Y", "Z", "H", "S", "T"]
+        for gate_name in ["X", "Y", "Z", "H", "S", "T"]
     },
     **{
         gate_name: (getattr(qulacs.gate, gate_name), _negate)
-        for gate_name in ["RX", "RY", "RZ", "RH"]
+        for gate_name in ["RX", "RY", "RZ"]
     },
     "PHASE": (qulacs.gate.U1, _identity),
     # TODO: add two-qubit gates
