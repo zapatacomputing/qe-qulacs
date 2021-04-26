@@ -1,6 +1,7 @@
 import os
 
-# It seems that qulacs has some conflict with pyquil, therefore it needs to be imported before zquantum.core.
+# It seems that qulacs has some conflict with pyquil, therefore it needs to be imported
+# before zquantum.core.
 import qulacs
 import numpy as np
 from qulacs.observable import create_observable_from_openfermion_text
@@ -57,7 +58,7 @@ class QulacsSimulator(QuantumSimulator):
         return Wavefunction(amplitudes)
 
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.n_samples != None:
+        if self.n_samples is not None:
             raise Exception(
                 "Exact expectation values work only for n_samples equal to None."
             )
