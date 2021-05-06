@@ -93,10 +93,10 @@ class QulacsSimulator(QuantumSimulator):
     )
     def get_qulacs_state_from_circuit(self, circuit: NewCircuit):
         qulacs_state = qulacs.QuantumState(circuit.n_qubits)
-        for supported, operations_group in itertools.groupby(
+        for executable, operations_group in itertools.groupby(
             circuit.operations, self.can_be_executed_natively
         ):
-            if supported:
+            if executable:
                 qulacs_circuit = convert_to_qulacs(
                     NewCircuit(operations_group, circuit.n_qubits)
                 )
