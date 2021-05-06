@@ -1,6 +1,7 @@
 # It seems that qulacs has some conflict with pyquil, therefore it needs to be imported
 # before zquantum.core.
 import qulacs
+import itertools
 import numpy as np
 from qulacs.observable import create_observable_from_openfermion_text
 from pyquil.wavefunction import Wavefunction
@@ -12,9 +13,10 @@ from zquantum.core.measurement import (
     Measurements,
 )
 from zquantum.core.wip.circuits import (
-     new_circuit_from_old_circuit,
-     Circuit as NewCircuit,
- )
+    new_circuit_from_old_circuit,
+    Circuit as NewCircuit,
+    GateOperation,
+)
 from zquantum.core.wip.compatibility_tools import compatible_with_old_type
 from .conversions import convert_to_qulacs
 from typing import Optional
@@ -90,7 +92,21 @@ class QulacsSimulator(QuantumSimulator):
         old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
     )
     def get_qulacs_state_from_circuit(self, circuit: NewCircuit):
-        qulacs_circuit = convert_to_qulacs(circuit)
         qulacs_state = qulacs.QuantumState(circuit.n_qubits)
-        qulacs_circuit.update_quantum_state(qulacs_state)
+        for executable, operations_group in itertools.groupby(
+            circuit.operations, self.can_be_executed_natively
+        ):
+            if executable:
+                qulacs_circuit = convert_to_qulacs(
+                    NewCircuit(operations_group, circuit.n_qubits)
+                )
+                qulacs_circuit.update_quantum_state(qulacs_state)
+            else:
+                wavefunction = qulacs_state.get_vector()
+                for operation in operations_group:
+                    wavefunction = operation.apply(wavefunction)
+                qulacs_state.load(wavefunction)
         return qulacs_state
+
+    def can_be_executed_natively(self, operation):
+        return isinstance(operation, GateOperation)
