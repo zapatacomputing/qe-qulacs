@@ -6,17 +6,12 @@ import numpy as np
 from qulacs.observable import create_observable_from_openfermion_text
 from pyquil.wavefunction import Wavefunction
 from zquantum.core.interfaces.backend import QuantumSimulator
-from zquantum.core.circuit import Circuit as OldCircuit
 from zquantum.core.measurement import (
     sample_from_wavefunction,
     ExpectationValues,
     Measurements,
 )
-from zquantum.core.wip.circuits import (
-    new_circuit_from_old_circuit,
-    Circuit as NewCircuit,
-    GateOperation,
-)
+from zquantum.core.circuits import Circuit, GateOperation
 from zquantum.core.wip.compatibility_tools import compatible_with_old_type
 from .conversions import convert_to_qulacs
 from typing import Optional
@@ -29,11 +24,8 @@ class QulacsSimulator(QuantumSimulator):
     def __init__(self, n_samples=None):
         super().__init__(n_samples)
 
-    @compatible_with_old_type(
-        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
-    )
     def run_circuit_and_measure(
-        self, circuit: NewCircuit, n_samples: Optional[int] = None, **kwargs
+        self, circuit: Circuit, n_samples: Optional[int] = None, **kwargs
     ):
         """
         Run a circuit and measure a certain number of bitstrings
@@ -55,18 +47,12 @@ class QulacsSimulator(QuantumSimulator):
         bitstrings = sample_from_wavefunction(wavefunction, n_samples)
         return Measurements(bitstrings)
 
-    @compatible_with_old_type(
-        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
-    )
     def get_wavefunction(self, circuit):
         super().get_wavefunction(circuit)
         qulacs_state = self.get_qulacs_state_from_circuit(circuit)
         amplitudes = qulacs_state.get_vector()
         return Wavefunction(amplitudes)
 
-    @compatible_with_old_type(
-        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
-    )
     def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
         if self.n_samples is not None:
             raise Exception(
@@ -88,17 +74,14 @@ class QulacsSimulator(QuantumSimulator):
                 )
         return ExpectationValues(np.array(expectation_values))
 
-    @compatible_with_old_type(
-        old_type=OldCircuit, translate_old_to_wip=new_circuit_from_old_circuit
-    )
-    def get_qulacs_state_from_circuit(self, circuit: NewCircuit):
+    def get_qulacs_state_from_circuit(self, circuit: Circuit):
         qulacs_state = qulacs.QuantumState(circuit.n_qubits)
         for executable, operations_group in itertools.groupby(
             circuit.operations, self.can_be_executed_natively
         ):
             if executable:
                 qulacs_circuit = convert_to_qulacs(
-                    NewCircuit(operations_group, circuit.n_qubits)
+                    Circuit(operations_group, circuit.n_qubits)
                 )
                 qulacs_circuit.update_quantum_state(qulacs_state)
             else:

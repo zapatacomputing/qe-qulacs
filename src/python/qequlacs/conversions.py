@@ -1,5 +1,5 @@
 import qulacs
-from zquantum.core.wip import circuits
+from zquantum.core import circuits
 import numpy as np
 
 
