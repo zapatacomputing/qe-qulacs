@@ -1,7 +1,6 @@
 import pytest
 from qequlacs.simulator import QulacsSimulator
-from zquantum.core import circuit
-from zquantum.core.wip import circuits
+from zquantum.core import circuits
 from zquantum.core.interfaces.backend_test import (
     QuantumSimulatorTests,
     QuantumSimulatorGatesTest,
