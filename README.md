@@ -1,5 +1,7 @@
 # qe-qulacs
 
+[![codecov](https://codecov.io/gh/zapatacomputing/qe-qulacs/branch/master/graph/badge.svg?token=6G6TU70MH0)](https://codecov.io/gh/zapatacomputing/qe-qulacs)
+
 ## What is it?
 
 
