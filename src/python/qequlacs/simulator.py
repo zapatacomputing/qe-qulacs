@@ -4,6 +4,7 @@ import qulacs
 import itertools
 import numpy as np
 from qulacs.observable import create_observable_from_openfermion_text
+from openfermion import QubitOperator
 from pyquil.wavefunction import Wavefunction
 from zquantum.core.interfaces.backend import QuantumSimulator
 from zquantum.core.measurement import (
@@ -14,50 +15,37 @@ from zquantum.core.measurement import (
 from zquantum.core.circuits import Circuit, GateOperation
 from zquantum.core.wip.compatibility_tools import compatible_with_old_type
 from .conversions import convert_to_qulacs
-from typing import Optional
+from typing import Any
 
 
 class QulacsSimulator(QuantumSimulator):
 
     supports_batching = False
 
-    def __init__(self, n_samples=None):
-        super().__init__(n_samples)
+    def __init__(self):
+        super().__init__()
 
-    def run_circuit_and_measure(
-        self, circuit: Circuit, n_samples: Optional[int] = None, **kwargs
-    ):
+    def run_circuit_and_measure(self, circuit: Circuit, n_samples: int) -> Measurements:
         """
         Run a circuit and measure a certain number of bitstrings
 
         Args:
             circuit: the circuit to prepare the state
             n_samples: the number of bitstrings to sample
-        Returns:
-            The measured bitstrings.
         """
-        if n_samples is None:
-            if self.n_samples is None:
-                raise ValueError(
-                    "n_samples needs to be specified either as backend attribute or as an function argument."
-                )
-            else:
-                n_samples = self.n_samples
         wavefunction = self.get_wavefunction(circuit)
         bitstrings = sample_from_wavefunction(wavefunction, n_samples)
         return Measurements(bitstrings)
 
-    def get_wavefunction(self, circuit):
+    def get_wavefunction(self, circuit) -> Wavefunction:
         super().get_wavefunction(circuit)
         qulacs_state = self.get_qulacs_state_from_circuit(circuit)
         amplitudes = qulacs_state.get_vector()
         return Wavefunction(amplitudes)
 
-    def get_exact_expectation_values(self, circuit, qubit_operator, **kwargs):
-        if self.n_samples is not None:
-            raise Exception(
-                "Exact expectation values work only for n_samples equal to None."
-            )
+    def get_exact_expectation_values(
+        self, circuit: Circuit, qubit_operator: QubitOperator
+    ) -> ExpectationValues:
         self.number_of_circuits_run += 1
         self.number_of_jobs_run += 1
 
@@ -91,5 +79,5 @@ class QulacsSimulator(QuantumSimulator):
                 qulacs_state.load(wavefunction)
         return qulacs_state
 
-    def can_be_executed_natively(self, operation):
+    def can_be_executed_natively(self, operation: Any) -> bool:
         return isinstance(operation, GateOperation)
