@@ -9,23 +9,14 @@ from zquantum.core.interfaces.backend_test import (
 import numpy as np
 
 
-@pytest.fixture(
-    params=[
-        {"n_samples": None},
-        {"n_samples": 1000},
-    ]
-)
-def backend(request):
-    return QulacsSimulator(**request.param)
+@pytest.fixture
+def backend():
+    return QulacsSimulator()
 
 
-@pytest.fixture(
-    params=[
-        {"n_samples": None},
-    ]
-)
-def wf_simulator(request):
-    return QulacsSimulator(**request.param)
+@pytest.fixture
+def wf_simulator():
+    return QulacsSimulator()
 
 
 class TestQulacs(QuantumSimulatorTests):
