@@ -63,7 +63,7 @@ class TestQulacs(QuantumSimulatorTests):
                         circuits.MultiPhaseOperation([-0.1, 0.3, -0.5, 0.7]),
                     ]
                 ),
-                np.array([np.exp(-0.1j), np.exp(0.3j), 0, 0]) / np.sqrt(2),
+                np.array([np.exp(-0.1j), 0, np.exp(-0.5j), 0]) / np.sqrt(2),
             ),
         ],
     )
@@ -72,7 +72,7 @@ class TestQulacs(QuantumSimulatorTests):
     ):
         wavefunction = backend.get_wavefunction(circuit)
 
-        np.testing.assert_almost_equal(wavefunction, target_wavefunction)
+        np.testing.assert_almost_equal(wavefunction.amplitudes, target_wavefunction)
 
     def test_run_circuit_and_measure_works_with_multiphase_operator(self, backend):
         params = [-0.1, 0.3, -0.5, 0.7]
