@@ -81,7 +81,7 @@ class TestQulacs(QuantumSimulatorTests):
         )
 
         measurements = backend.run_circuit_and_measure(circuit, n_samples=1000)
-        counts = measurements.get_counts()
+
         assert len(measurements.bitstrings) == 1000
         assert all(
             bitstring in [(0, 1), (1, 1)] for bitstring in measurements.bitstrings
