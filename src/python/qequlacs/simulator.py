@@ -8,15 +8,13 @@ from qulacs.observable import create_observable_from_openfermion_text
 from zquantum.core.circuits import Circuit, GateOperation
 from zquantum.core.interfaces.backend import (
     QuantumSimulator,
-    flip_amplitudes,
-    flip_wavefunction,
 )
 from zquantum.core.measurement import (
     ExpectationValues,
     Measurements,
     sample_from_wavefunction,
 )
-from zquantum.core.wavefunction import Wavefunction
+from zquantum.core.wavefunction import Wavefunction, flip_wavefunction, flip_amplitudes
 
 from .conversions import convert_to_qulacs
 
