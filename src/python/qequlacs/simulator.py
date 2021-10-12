@@ -6,13 +6,15 @@ import qulacs
 from openfermion import QubitOperator
 from qulacs.observable import create_observable_from_openfermion_text
 from zquantum.core.circuits import Circuit, GateOperation
-from zquantum.core.interfaces.backend import QuantumSimulator
+from zquantum.core.interfaces.backend import (
+    QuantumSimulator,
+)
 from zquantum.core.measurement import (
     ExpectationValues,
     Measurements,
     sample_from_wavefunction,
 )
-from zquantum.core.wavefunction import Wavefunction
+from zquantum.core.wavefunction import Wavefunction, flip_wavefunction, flip_amplitudes
 
 from .conversions import convert_to_qulacs
 
@@ -40,7 +42,7 @@ class QulacsSimulator(QuantumSimulator):
         super().get_wavefunction(circuit)
         qulacs_state = self.get_qulacs_state_from_circuit(circuit)
         amplitudes = qulacs_state.get_vector()
-        return Wavefunction(amplitudes)
+        return flip_wavefunction(Wavefunction(amplitudes))
 
     def get_exact_expectation_values(
         self, circuit: Circuit, qubit_operator: QubitOperator
@@ -72,10 +74,10 @@ class QulacsSimulator(QuantumSimulator):
                 )
                 qulacs_circuit.update_quantum_state(qulacs_state)
             else:
-                wavefunction = qulacs_state.get_vector()
+                wavefunction = flip_amplitudes(qulacs_state.get_vector())
                 for operation in operations_group:
                     wavefunction = operation.apply(wavefunction)
-                qulacs_state.load(wavefunction)
+                qulacs_state.load(flip_amplitudes(wavefunction))
         return qulacs_state
 
     def can_be_executed_natively(self, operation: Any) -> bool:
