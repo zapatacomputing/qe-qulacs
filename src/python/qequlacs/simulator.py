@@ -6,7 +6,7 @@ from openfermion import QubitOperator
 from qulacs.observable import create_observable_from_openfermion_text
 from zquantum.core.circuits import Circuit, GateOperation
 from zquantum.core.interfaces.backend import (
-    QuantumSimulator,
+    QuantumSimulator, StateVector,
 )
 from zquantum.core.measurement import (
     ExpectationValues,
@@ -68,8 +68,8 @@ class QulacsSimulator(QuantumSimulator):
         return qulacs_state
 
     def _get_wavefunction_from_native_circuit(
-        self, circuit: Circuit, initial_state
-    ) -> Wavefunction:
+        self, circuit: Circuit, initial_state: StateVector
+    ) -> StateVector:
         return flip_amplitudes(
             self._get_qulacs_state(circuit, initial_state).get_vector()
         )
