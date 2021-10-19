@@ -1,4 +1,3 @@
-import itertools
 from typing import Any
 
 import numpy as np
@@ -7,7 +6,7 @@ from openfermion import QubitOperator
 from qulacs.observable import create_observable_from_openfermion_text
 from zquantum.core.circuits import Circuit, GateOperation
 from zquantum.core.interfaces.backend import (
-    QuantumSimulator,
+    QuantumSimulator, StateVector,
 )
 from zquantum.core.measurement import (
     ExpectationValues,
@@ -38,12 +37,6 @@ class QulacsSimulator(QuantumSimulator):
         bitstrings = sample_from_wavefunction(wavefunction, n_samples)
         return Measurements(bitstrings)
 
-    def get_wavefunction(self, circuit) -> Wavefunction:
-        super().get_wavefunction(circuit)
-        qulacs_state = self.get_qulacs_state_from_circuit(circuit)
-        amplitudes = qulacs_state.get_vector()
-        return flip_wavefunction(Wavefunction(amplitudes))
-
     def get_exact_expectation_values(
         self, circuit: Circuit, qubit_operator: QubitOperator
     ) -> ExpectationValues:
@@ -51,7 +44,7 @@ class QulacsSimulator(QuantumSimulator):
         self.number_of_jobs_run += 1
 
         expectation_values = []
-        qulacs_state = self.get_qulacs_state_from_circuit(circuit)
+        qulacs_state = self._get_qulacs_state(circuit)
 
         for op in qubit_operator:
             qulacs_observable = create_observable_from_openfermion_text(str(op))
@@ -63,22 +56,24 @@ class QulacsSimulator(QuantumSimulator):
                 )
         return ExpectationValues(np.array(expectation_values))
 
-    def get_qulacs_state_from_circuit(self, circuit: Circuit):
+    def _get_qulacs_state(self, circuit: Circuit, initial_state=None) -> Wavefunction:
+        if initial_state is None:
+            initial_state = np.array(
+                [1] + (2 ** circuit.n_qubits - 1) * [0], dtype=np.int8
+            )
         qulacs_state = qulacs.QuantumState(circuit.n_qubits)
-        for executable, operations_group in itertools.groupby(
-            circuit.operations, self.can_be_executed_natively
-        ):
-            if executable:
-                qulacs_circuit = convert_to_qulacs(
-                    Circuit(operations_group, circuit.n_qubits)
-                )
-                qulacs_circuit.update_quantum_state(qulacs_state)
-            else:
-                wavefunction = flip_amplitudes(qulacs_state.get_vector())
-                for operation in operations_group:
-                    wavefunction = operation.apply(wavefunction)
-                qulacs_state.load(flip_amplitudes(wavefunction))
+        qulacs_state.load(flip_amplitudes(initial_state))
+        qulacs_circuit = convert_to_qulacs(circuit)
+        qulacs_circuit.update_quantum_state(qulacs_state)
         return qulacs_state
+
+    def _get_wavefunction_from_native_circuit(
+        self, circuit: Circuit, initial_state: StateVector
+    ) -> StateVector:
+        return flip_amplitudes(
+            self._get_qulacs_state(circuit, initial_state).get_vector()
+        )
 
     def can_be_executed_natively(self, operation: Any) -> bool:
         return isinstance(operation, GateOperation)
+
