@@ -87,19 +87,6 @@ class TestQulacs(QuantumSimulatorTests):
             bitstring in [(0, 1), (1, 1)] for bitstring in measurements.bitstrings
         )
 
-    def test_get_wavefunction_uses_provided_initial_state(self):
-        circuit = circuits.Circuit([circuits.H(0), circuits.H(1)])
-        initial_state = np.array([0, 1, 0, 0])
-        simulator = QulacsSimulator()
-        np.testing.assert_allclose(
-            simulator.get_wavefunction(circuit, initial_state=initial_state),
-            np.array([0.5, -0.5, 0.5, -0.5])
-        )
-        np.testing.assert_allclose(
-            simulator.get_wavefunction(circuit),
-            0.5 * np.ones(4)
-        )
-
 
 class TestQulacsGates(QuantumSimulatorGatesTest):
     pass
