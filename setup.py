@@ -33,5 +33,5 @@ setuptools.setup(
         "qulacs==0.2.0",
         "z-quantum-core",
     ],
-    extras_requires=extras,
+    extras_require=extras,
 )
