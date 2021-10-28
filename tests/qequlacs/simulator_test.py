@@ -1,12 +1,11 @@
+import numpy as np
 import pytest
 from qequlacs.simulator import QulacsSimulator
 from zquantum.core import circuits
 from zquantum.core.interfaces.backend_test import (
-    QuantumSimulatorTests,
     QuantumSimulatorGatesTest,
+    QuantumSimulatorTests,
 )
-
-import numpy as np
 
 
 @pytest.fixture

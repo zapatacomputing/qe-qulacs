@@ -5,15 +5,13 @@ import qulacs
 from openfermion import QubitOperator
 from qulacs.observable import create_observable_from_openfermion_text
 from zquantum.core.circuits import Circuit, GateOperation
-from zquantum.core.interfaces.backend import (
-    QuantumSimulator, StateVector,
-)
+from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
 from zquantum.core.measurement import (
     ExpectationValues,
     Measurements,
     sample_from_wavefunction,
 )
-from zquantum.core.wavefunction import Wavefunction, flip_wavefunction, flip_amplitudes
+from zquantum.core.wavefunction import Wavefunction, flip_amplitudes, flip_wavefunction
 
 from .conversions import convert_to_qulacs
 
@@ -76,4 +74,3 @@ class QulacsSimulator(QuantumSimulator):
 
     def can_be_executed_natively(self, operation: Any) -> bool:
         return isinstance(operation, GateOperation)
-
