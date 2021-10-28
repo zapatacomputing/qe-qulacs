@@ -1,6 +1,6 @@
+import numpy as np
 import qulacs
 from zquantum.core import circuits
-import numpy as np
 
 
 def _identity(x):
@@ -11,7 +11,7 @@ def _negate(x):
     return -x
 
 
-def _no_params(*args, **kwargs):
+def _no_params(x):
     raise RuntimeError(
         "This gate isn't parametric, you shouldn't need to map its params"
     )
@@ -76,7 +76,7 @@ def _qulacs_gate(operation: circuits.GateOperation):
             operation.gate.name
         ]
         return qulacs_gate_factory(
-            *operation.qubit_indices, *map(param_transform, operation.gate.params)
+            *operation.qubit_indices, *map(param_transform, operation.params)
         )
     except KeyError:
         pass
