@@ -1,12 +1,12 @@
 # qe-qulacs
 
-[![codecov](https://codecov.io/gh/zapatacomputing/qe-qulacs/branch/master/graph/badge.svg?token=6G6TU70MH0)](https://codecov.io/gh/zapatacomputing/qe-qulacs)
+[![codecov](https://codecov.io/gh/zapatacomputing/qe-qulacs/branch/main/graph/badge.svg?token=6G6TU70MH0)](https://codecov.io/gh/zapatacomputing/qe-qulacs)
 
 ## What is it?
 
 
 `qe-qulacs` is an [Orquestra](https://www.zapatacomputing.com/orquestra/) module that allows you to use [Qulacs](https://github.com/qulacs/qulacs) simulator in your Orquestra workflows.
-It complies to the backend interface defined in the [`z-quantum-core`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/orquestra/core/interfaces/backend.py).
+It complies to the backend interface defined in the [`z-quantum-core`](https://github.com/zapatacomputing/z-quantum-core/blob/main/src/python/orquestra/core/interfaces/backend.py).
 
 ## Usage
 
@@ -19,7 +19,7 @@ imports:
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/qe-qulacs.git"
-    branch: "master"
+    branch: "main"
 ```
 
 and then add it in the `imports` argument of your `step`:
