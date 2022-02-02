@@ -54,7 +54,9 @@ class QulacsSimulator(QuantumSimulator):
                 )
         return ExpectationValues(np.array(expectation_values))
 
-    def _get_qulacs_state(self, circuit: Circuit, initial_state=None) -> Wavefunction:
+    def _get_qulacs_state(
+        self, circuit: Circuit, initial_state=None
+    ) -> qulacs.QuantumState:
         if initial_state is None:
             initial_state = np.array(
                 [1] + (2 ** circuit.n_qubits - 1) * [0], dtype=np.int8

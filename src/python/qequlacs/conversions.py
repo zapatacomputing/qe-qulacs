@@ -53,7 +53,7 @@ ZQUANTUM_TO_QULACS_GATES = {
 
 
 def _make_cphase_gate(operation: circuits.GateOperation):
-    matrix = np.diag([1.0, np.exp(1.0j * operation.gate.params[0])])
+    matrix = np.diag([1.0, np.exp(1.0j * complex(operation.gate.params[0]))])
     gate_to_add = qulacs.gate.DenseMatrix(operation.qubit_indices[1], matrix)
     gate_to_add.add_control_qubit(operation.qubit_indices[0], 1)
     return gate_to_add

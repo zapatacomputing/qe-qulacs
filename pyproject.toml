@@ -5,12 +5,20 @@ requires = ["setuptools", "wheel",  "setuptools_scm>=6.0", "pygit2"]
 # See https://github.com/pypa/setuptools_scm for guidance
 [tool.setuptools_scm]
 
+
 [tool.isort]
 profile = "black"
 
 [tool.mypy]
 ignore_missing_imports = false
 namespace_packages = true
+
+[[tool.mypy.overrides]]
+module = [
+    'openfermion.*',
+    'qulacs.*'
+]
+ignore_missing_imports = true
 
 [tool.coverage.run]
 # main.py should be checked separately in an integration test.
