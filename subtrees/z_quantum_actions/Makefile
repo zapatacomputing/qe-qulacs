@@ -56,7 +56,7 @@ flake8-default: clean
 
 mypy-default: clean
 	@echo scanning files with mypy: Please be patient....
-	$(PYTHON) -m mypy src tests
+	$(PYTHON) -m mypy src
 
 black-default: clean
 	$(PYTHON) -m black --check src tests

@@ -1,3 +1,5 @@
+from numbers import Real
+
 import numpy as np
 import qulacs
 from zquantum.core import circuits
@@ -53,7 +55,12 @@ ZQUANTUM_TO_QULACS_GATES = {
 
 
 def _make_cphase_gate(operation: circuits.GateOperation):
-    matrix = np.diag([1.0, np.exp(1.0j * complex(operation.gate.params[0]))])
+    if isinstance(operation.gate.params[0], Real):
+        matrix = np.diag([1.0, np.exp(1.0j * operation.gate.params[0])])
+    else:
+        raise ValueError(
+            f"Parameter of {operation.gate.name} operation must be a real number."
+        )
     gate_to_add = qulacs.gate.DenseMatrix(operation.qubit_indices[1], matrix)
     gate_to_add.add_control_qubit(operation.qubit_indices[0], 1)
     return gate_to_add
