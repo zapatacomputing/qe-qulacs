@@ -27,7 +27,7 @@ class TestQulacs(QuantumSimulatorTests):
                     [
                         circuits.H(0),
                         circuits.H(1),
-                        circuits.MultiPhaseOperation([-0.1, 0.3, -0.5, 0.7]),
+                        circuits.MultiPhaseOperation((-0.1, 0.3, -0.5, 0.7)),
                         circuits.X(0),
                         circuits.X(0),
                     ]
@@ -39,8 +39,8 @@ class TestQulacs(QuantumSimulatorTests):
                     [
                         circuits.H(0),
                         circuits.H(1),
-                        circuits.MultiPhaseOperation([-0.1, 0.3, -0.5, 0.7]),
-                        circuits.MultiPhaseOperation([-0.2, 0.1, -0.2, -0.3]),
+                        circuits.MultiPhaseOperation((-0.1, 0.3, -0.5, 0.7)),
+                        circuits.MultiPhaseOperation((-0.2, 0.1, -0.2, -0.3)),
                         circuits.X(0),
                         circuits.X(0),
                     ]
@@ -50,7 +50,7 @@ class TestQulacs(QuantumSimulatorTests):
             (
                 circuits.Circuit(
                     [
-                        circuits.MultiPhaseOperation([-0.1, 0.3, -0.5, 0.7]),
+                        circuits.MultiPhaseOperation((-0.1, 0.3, -0.5, 0.7)),
                     ]
                 ),
                 np.array([np.exp(-0.1j), 0, 0, 0]),
@@ -59,7 +59,7 @@ class TestQulacs(QuantumSimulatorTests):
                 circuits.Circuit(
                     [
                         circuits.H(0),
-                        circuits.MultiPhaseOperation([-0.1, 0.3, -0.5, 0.7]),
+                        circuits.MultiPhaseOperation((-0.1, 0.3, -0.5, 0.7)),
                     ]
                 ),
                 np.array([np.exp(-0.1j), 0, np.exp(-0.5j), 0]) / np.sqrt(2),
