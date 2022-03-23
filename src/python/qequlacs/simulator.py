@@ -2,8 +2,8 @@ from typing import Any
 
 import numpy as np
 import qulacs
-from openfermion import QubitOperator
 from qulacs.observable import create_observable_from_openfermion_text
+from zquantum.core.openfermion import QubitOperator
 from zquantum.core.circuits import Circuit, GateOperation
 from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
 from zquantum.core.measurement import (
