@@ -3,7 +3,6 @@ from typing import Any
 import numpy as np
 import qulacs
 from qulacs.observable import create_observable_from_openfermion_text
-from zquantum.core.openfermion import QubitOperator
 from zquantum.core.circuits import Circuit, GateOperation
 from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
 from zquantum.core.measurement import (
@@ -11,6 +10,7 @@ from zquantum.core.measurement import (
     Measurements,
     sample_from_wavefunction,
 )
+from zquantum.core.openfermion import QubitOperator
 from zquantum.core.wavefunction import Wavefunction, flip_amplitudes, flip_wavefunction
 
 from .conversions import convert_to_qulacs
