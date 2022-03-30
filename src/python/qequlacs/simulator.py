@@ -2,7 +2,6 @@ from typing import Any
 
 import numpy as np
 import qulacs
-from openfermion import QubitOperator
 from qulacs.observable import create_observable_from_openfermion_text
 from zquantum.core.circuits import Circuit, GateOperation
 from zquantum.core.interfaces.backend import QuantumSimulator, StateVector
@@ -11,7 +10,8 @@ from zquantum.core.measurement import (
     Measurements,
     sample_from_wavefunction,
 )
-from zquantum.core.wavefunction import Wavefunction, flip_amplitudes, flip_wavefunction
+from zquantum.core.openfermion import SymbolicOperator
+from zquantum.core.wavefunction import flip_amplitudes, flip_wavefunction
 
 from .conversions import convert_to_qulacs
 
@@ -36,7 +36,7 @@ class QulacsSimulator(QuantumSimulator):
         return Measurements(bitstrings)
 
     def get_exact_expectation_values(
-        self, circuit: Circuit, qubit_operator: QubitOperator
+        self, circuit: Circuit, qubit_operator: SymbolicOperator
     ) -> ExpectationValues:
         self.number_of_circuits_run += 1
         self.number_of_jobs_run += 1
