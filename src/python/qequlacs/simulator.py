@@ -59,7 +59,7 @@ class QulacsSimulator(QuantumSimulator):
     ) -> qulacs.QuantumState:
         if initial_state is None:
             initial_state = np.array(
-                [1] + (2 ** circuit.n_qubits - 1) * [0], dtype=np.int8
+                [1] + (2**circuit.n_qubits - 1) * [0], dtype=np.int8
             )
         qulacs_state = qulacs.QuantumState(circuit.n_qubits)
         qulacs_state.load(flip_amplitudes(initial_state))
